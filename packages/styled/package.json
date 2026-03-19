@@ -1,0 +1,58 @@
+{
+  "name": "@rn-styled/styled",
+  "version": "0.1.0",
+  "description": "React Native styled-components inspired library — TypeScript-first, high performance",
+  "keywords": [
+    "react-native",
+    "styled-components",
+    "styling",
+    "css-in-js",
+    "typescript"
+  ],
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "react-native": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "publishConfig": {
+    "access": "public"
+  },
+  "exports": {
+    ".": {
+      "react-native": "./dist/index.js",
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js",
+      "default": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "lint": "eslint src --ext .ts,.tsx",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "dependencies": {
+    "@rn-styled/core": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.2",
+    "@types/react": "^18.2.0",
+    "tsup": "^8.0.2",
+    "typescript": "^5.4.5",
+    "vitest": "^1.4.0"
+  },
+  "peerDependencies": {
+    "react": ">=18.0.0",
+    "react-native": ">=0.73.0"
+  },
+  "peerDependenciesMeta": {
+    "react-native": {
+      "optional": false
+    }
+  }
+}
