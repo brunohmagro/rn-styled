@@ -132,10 +132,6 @@ importers:
         version: 1.6.1(@types/node@22.19.13)(terser@5.46.0)
 
   packages/styled:
-    dependencies:
-      '@rn-styled/core':
-        specifier: workspace:*
-        version: link:../core
     devDependencies:
       '@types/node':
         specifier: ^22.10.2

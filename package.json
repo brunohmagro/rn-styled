@@ -1,7 +1,7 @@
 {
   "name": "rn-styled-monorepo",
   "private": true,
-  "version": "0.0.0",
+  "version": "0.2.0",
   "packageManager": "pnpm@9.0.0",
   "scripts": {
     "build": "turbo run build",
@@ -13,7 +13,7 @@
     "example:ios": "pnpm --filter ExampleApp ios",
     "format": "prettier --write \"**/*.{ts,tsx,md,json}\"",
     "changeset": "changeset",
-    "release:check": "pnpm --filter @rn-styled/core lint && pnpm --filter @rn-styled/core test && pnpm --filter @rn-styled/core build && pnpm --filter @rn-styled/styled lint && pnpm --filter @rn-styled/styled test && pnpm --filter @rn-styled/styled build && (cd packages/core && npm pack --dry-run) && (cd packages/styled && npm pack --dry-run)",
+    "release:check": "pnpm --filter @rn-styled/styled lint && pnpm --filter @rn-styled/styled test && pnpm --filter @rn-styled/styled build && (cd packages/styled && npm pack --dry-run)",
     "version-packages": "changeset version",
     "release": "pnpm release:check && changeset publish"
   },

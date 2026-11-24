@@ -1,6 +1,7 @@
 # Publishing
 
-This repository uses Changesets to publish `@rn-styled/core` and `@rn-styled/styled`.
+This repository uses Changesets to publish `@rn-styled/styled`.
+`@rn-styled/core` remains internal to the monorepo and is not published.
 
 ## Before first publish
 
@@ -34,7 +35,7 @@ This validates:
 
 ## First publish
 
-If these packages have never been published before, current versions can be published directly:
+If this package has never been published before, the current version can be published directly:
 
 ```bash
 pnpm release
@@ -67,6 +68,5 @@ pnpm release
 After publish:
 
 ```bash
-npm view @rn-styled/core version
 npm view @rn-styled/styled version
 ```

@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { t, v } from '../helpers';
-import { TOKEN_REF_BRAND, VARIANT_SLOT_BRAND } from '@rn-styled/core';
+import { TOKEN_REF_BRAND, VARIANT_SLOT_BRAND } from '../internal-core';
 
 describe('t() helper', () => {
   it('creates a TokenRef with correct brand and path', () => {

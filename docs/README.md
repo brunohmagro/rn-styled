@@ -29,8 +29,9 @@ const Button = styled.Pressable`
 Under the hood:
 
 1. The template is **parsed once** (at module init) into an AST.
-2. Static declarations become a single `StyleSheet.create`'d base style.
-3. Dynamic declarations (token refs and variant slots) are resolved **per render** — but the result is **LRU-cached** by a deterministic key, so the hot path is a Map lookup + array spread.
+2. Static declarations are precomputed into a cached base style object.
+3. Dynamic declarations (token refs and variant slots) are compiled into cache-friendly metadata and resolved against the current theme and variants.
+4. The hot path is reduced to context read, prop splitting, cache lookup, and style composition.
 
 No CSS injection. No DOM. No web. React Native only.
 
@@ -222,6 +223,24 @@ styled(MyCustomView).withConfig({ defaultVariants: { variant: 'outlined' } })`..
 
 ---
 
+## Benchmark Summary
+
+In our latest local benchmark run, `@rn-styled/styled` outperformed `styled-components/native` in all measured scenarios.
+
+| Library | Normalized score | Average total time | Scenario wins |
+|---|---:|---:|---:|
+| `@rn-styled/styled` | `6.00` | `1601 ms` | `6` |
+| `styled-components/native` | `7.23` | `1836 ms` | `0` |
+
+- Lower normalized score is better.
+- The latest run showed about `12.8%` lower average total time for `@rn-styled/styled`.
+- Treat these numbers as benchmark evidence for the measured workloads, not as a universal promise for every app.
+
+For the scenario breakdown and wording guidance, see [PERFORMANCE.md](./PERFORMANCE.md).
+For the benchmark reproduction checklist, see [BENCHMARK.md](./BENCHMARK.md).
+
+---
+
 ## Style Prop Merging
 
 ```tsx
@@ -237,7 +256,7 @@ Internally, the style is composed as:
 style={[baseStyle, variantStyle, props.style]}
 ```
 
-- `baseStyle` — static declarations, StyleSheet.create'd once.
+- `baseStyle` — precomputed static declarations, cached once per component.
 - `variantStyle` — dynamic declarations resolved for current variants + theme, cached.
 - `props.style` — user-provided overrides, always wins.
 
@@ -298,9 +317,9 @@ const Bad = styled.View`
 | Operation | Frequency | Cost |
 |---|---|---|
 | Template parsing (AST) | Once per module | O(n) in template length |
-| Base style creation | Once per component | `StyleSheet.create` |
+| Base style creation | Once per component | cached object registration |
 | Variant style resolution | Once per unique (component + theme + variants) combo | LRU-cached |
-| Per-render work | Every render | Map lookup + array creation |
+| Per-render work | Every render | context read + prop split + cache lookup + style composition |
 
 **Cache eviction:** The LRU cache holds 800 entries per cache instance. In a typical app with ~50 styled components × ~3 variants × ~5 values = ~750 combinations, this comfortably fits. You can increase the limit by modifying the `LRUCache` constructor call in `engine.ts`.
 

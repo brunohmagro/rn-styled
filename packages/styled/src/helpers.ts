@@ -17,7 +17,7 @@ import {
   type TokenRef,
   type VariantMapping,
   type VariantSlot,
-} from '@rn-styled/core';
+} from './internal-core';
 
 // ---------------------------------------------------------------------------
 // Deep path types

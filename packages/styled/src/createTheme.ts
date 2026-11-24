@@ -12,7 +12,7 @@
  * enabling autocomplete for token paths throughout the library.
  */
 
-import type { BaseTheme } from '@rn-styled/core';
+import type { BaseTheme } from './internal-core';
 
 export type Theme<T extends BaseTheme> = T;
 

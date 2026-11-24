@@ -7,9 +7,10 @@
  */
 
 import React, { createContext, useContext, type ReactNode } from 'react';
-import type { BaseTheme } from '@rn-styled/core';
+import type { BaseTheme } from './internal-core';
 
-const ThemeContext = createContext<BaseTheme | null>(null);
+const DEFAULT_THEME: BaseTheme = Object.freeze({ __id: 'default' });
+const ThemeContext = createContext<BaseTheme>(DEFAULT_THEME);
 
 ThemeContext.displayName = 'RnStyledThemeContext';
 
@@ -33,11 +34,15 @@ export function ThemeProvider<T extends BaseTheme>({
  */
 export function useTheme<T extends BaseTheme = BaseTheme>(): T {
   const ctx = useContext(ThemeContext);
-  if (ctx === null) {
+  if (ctx === DEFAULT_THEME) {
     throw new Error(
       `[rn-styled] useTheme() called outside of <ThemeProvider>. ` +
         `Wrap your component tree with <ThemeProvider theme={…}>.`,
     );
   }
   return ctx as T;
+}
+
+export function useThemeOrDefault<T extends BaseTheme = BaseTheme>(): T {
+  return useContext(ThemeContext) as T;
 }

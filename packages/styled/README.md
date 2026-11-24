@@ -67,10 +67,29 @@ export default function App() {
 - `v()` for typed variant slots
 - `withConfig()` for default variants and display names
 
-## Package structure
+## Performance
 
-- `@rn-styled/styled`: public package most apps should install
-- `@rn-styled/core`: lower-level parser/runtime package used internally
+`@rn-styled/styled` is built to keep style parsing and most dynamic style work out of the render hot path.
+
+In our local React Native benchmark harness, it outperformed `styled-components/native` in 6 of 6 measured scenarios.
+
+| Library | Normalized score | Average total time | Scenario wins |
+|---|---:|---:|---:|
+| `@rn-styled/styled` | `6.00` | `1601 ms` | `6` |
+| `styled-components/native` | `7.23` | `1836 ms` | `0` |
+
+- Lower normalized score is better.
+- The latest run showed about `12.8%` lower average total time for `@rn-styled/styled`.
+- Results depend on device, React Native version, React version, and workload shape. Treat them as comparative benchmark results, not a universal guarantee.
+
+Measured workloads included:
+
+- mounting many styled cards
+- variant updates
+- theme swaps
+- `FlatList` mount
+- `FlatList` reorder
+- sequential repeated updates
 
 ## Notes
 

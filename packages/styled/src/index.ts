@@ -27,4 +27,4 @@ export type {
   VariantSlot,
   VariantMapping,
   ParsedTemplate,
-} from '@rn-styled/core';
+} from './internal-core';

@@ -57,17 +57,17 @@ import {
 } from 'react-native';
 
 import {
+  createPropSplitter,
+  getCachedComposedStyle,
   parseTemplate,
   resolveStyles,
-  filterProps,
-  extractVariantProps,
   type BaseTheme,
   type Interpolation,
   type ParsedTemplate,
   type VariantSlot,
-} from '@rn-styled/core';
+} from './internal-core';
 
-import { useTheme } from './ThemeProvider';
+import { useThemeOrDefault } from './ThemeProvider';
 
 // ---------------------------------------------------------------------------
 // Counter for stable componentIds
@@ -136,41 +136,34 @@ function buildStyledComponent<
   displayName: string,
 ): React.ComponentType<Omit<Props, 'style'> & VariantProps & { style?: StyleProp<AnyStyle> }> {
   const componentId = nextComponentId(config.displayName ?? displayName);
-  const variantKeySet = new Set(template.variantKeys);
+  const variantKeys = template.variantKeys;
   const defaultVariants = config.defaultVariants ?? {};
+  const splitStyledProps = createPropSplitter<Record<string, unknown>>(variantKeys, defaultVariants);
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const StyledComponent = forwardRef<unknown, any>((props, ref) => {
     // 1. Get theme from context
-    let theme: BaseTheme;
-    try {
-      // useTheme throws if outside provider — fall back to empty theme
-      // eslint-disable-next-line react-hooks/rules-of-hooks
-      theme = useTheme();
-    } catch {
-      theme = { __id: 'default' };
-    }
+    const theme = useThemeOrDefault<BaseTheme>();
 
-    // 2. Extract variant props
-    const variantProps = extractVariantProps(props, variantKeySet, defaultVariants);
+    // 2. Split forwarded props + variant props in one pass
+    const { forwardedProps, variantProps } = splitStyledProps(props);
 
     // 3. Resolve styles (LRU-cached)
     const { base, variant } = resolveStyles(componentId, template, theme, variantProps);
 
     // 4. Build style array (no flatten — RN handles arrays natively)
-    const styleArray =
-      variant !== null
-        ? [base.base, variant.variant, props.style]
-        : [base.base, props.style];
-
-    // 5. Filter variant props from forwarded props
-    const forwardedProps = filterProps(props, variantKeySet);
+    const style =
+      props.style == null
+        ? getCachedComposedStyle(base, variant)
+        : variant === null
+          ? [base.base, props.style]
+          : [base.base, variant.variant, props.style];
 
     return (
       <BaseComponent
         {...(forwardedProps as Props)}
         ref={ref}
-        style={styleArray}
+        style={style}
       />
     );
   });

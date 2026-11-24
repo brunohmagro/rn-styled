@@ -1,6 +1,6 @@
 {
   "name": "@rn-styled/styled",
-  "version": "0.1.0",
+  "version": "0.2.1",
   "description": "React Native styled-components inspired library — TypeScript-first, high performance",
   "keywords": [
     "react-native",
@@ -35,9 +35,6 @@
     "lint": "eslint src --ext .ts,.tsx",
     "test": "vitest run",
     "test:watch": "vitest"
-  },
-  "dependencies": {
-    "@rn-styled/core": "workspace:*"
   },
   "devDependencies": {
     "@types/node": "^22.10.2",
